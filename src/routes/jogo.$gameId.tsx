@@ -114,10 +114,7 @@ function GamePage() {
             <p className="text-[15px] text-muted-foreground">{game.description}</p>
 
             <div className="mt-auto flex flex-col gap-3">
-              <button type="button" onClick={startPlaying} className="btn-base btn-primary w-full">
-                <Play className="size-4" />
-                Jogar
-              </button>
+              
               {game.downloadUrl && (
                 <a
                   href={game.downloadUrl}
