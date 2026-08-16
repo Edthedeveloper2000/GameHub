@@ -4,7 +4,8 @@ import { Search, Gamepad2 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GameGrid } from "@/components/GameCard";
-import { games, gameYears, schoolYears } from "@/data/games";
+import { gameYears, schoolYears } from "@/data/games";
+import { useGames } from "@/components/GamesProvider";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { games } = useGames();
   const [schoolYear, setSchoolYear] = useState("");
   const [year, setYear] = useState("");
   const [origin, setOrigin] = useState("");
@@ -36,24 +38,26 @@ function Index() {
   const results = useMemo(() => {
     const q = search.trim().toLowerCase();
     return games.filter((g) => {
+      const authorsList = Array.isArray(g.authors) ? g.authors : [];
       const matchesGlobal =
         !q ||
         g.name.toLowerCase().includes(q) ||
-        g.description.toLowerCase().includes(q) ||
-        g.authors.some((a) => a.toLowerCase().includes(q)) ||
-        g.schoolYear.toLowerCase().includes(q) ||
+        (g.description || "").toLowerCase().includes(q) ||
+        authorsList.some((a) => a.toLowerCase().includes(q)) ||
+        (g.schoolYear || "").toLowerCase().includes(q) ||
         String(g.year).includes(q) ||
-        String(g.origin).toLowerCase().includes(q);
+        String(g.origin || "").toLowerCase().includes(q);
 
       const matchesOrigin = !origin || g.origin === origin;
       const matchesSchoolYear =
         origin === "PROJETO INTEGRADOR" ? !schoolYear || g.schoolYear === schoolYear : true;
       const matchesYear = !year || String(g.year) === year;
       const matchesAuthor =
-        !author || g.authors.some((a) => a.toLowerCase().includes(author.trim().toLowerCase()));
+        !author ||
+        authorsList.some((a) => a.toLowerCase().includes(author.trim().toLowerCase()));
       return matchesGlobal && matchesOrigin && matchesSchoolYear && matchesYear && matchesAuthor;
     });
-  }, [search, origin, schoolYear, year, author]);
+  }, [games, search, origin, schoolYear, year, author]);
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import { UploadCloud, X } from "lucide-react";
-import { schoolYears, type Game } from "@/data/games";
+import { Plus, UploadCloud, X } from "lucide-react";
+import { GameOrigin, schoolYears, type Game } from "@/data/games";
 
 export type GameFormValues = Omit<Game, "id">;
 
@@ -18,12 +18,17 @@ export function GameForm({
   const fileRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState(initial?.name ?? "");
   const [year, setYear] = useState(String(initial?.year ?? new Date().getFullYear()));
-  const [schoolYear, setSchoolYear] = useState(initial?.schoolYear ?? "");
+  const [schoolYear, setSchoolYear] = useState(initial?.schoolYear ?? (schoolYears[0] as string));
+  const [origin, setOrigin] = useState<GameOrigin>(
+    initial?.origin ?? GameOrigin.PROJETO_INTEGRADOR
+  );
   const [image, setImage] = useState(initial?.image ?? "");
   const [playUrl, setPlayUrl] = useState(initial?.playUrl ?? "");
   const [downloadUrl, setDownloadUrl] = useState(initial?.downloadUrl ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [authors, setAuthors] = useState<string[]>(initial?.authors ?? []);
+  const [authors, setAuthors] = useState<string[]>(
+    Array.isArray(initial?.authors) ? initial.authors : []
+  );
   const [authorInput, setAuthorInput] = useState("");
 
   function handleFile(file?: File | null) {
@@ -31,11 +36,34 @@ export function GameForm({
     setImage(URL.createObjectURL(file));
   }
 
-  function addAuthor() {
-    const value = authorInput.trim();
-    if (!value || authors.includes(value)) return;
-    setAuthors((prev) => [...prev, value]);
+  function addAuthor(textToAdd?: string) {
+    const raw = (textToAdd !== undefined ? textToAdd : authorInput).trim();
+    if (!raw) return;
+    const parts = raw.split(",").map((p) => p.trim()).filter(Boolean);
+    setAuthors((prev) => {
+      const next = [...prev];
+      for (const part of parts) {
+        if (!next.includes(part)) {
+          next.push(part);
+        }
+      }
+      return next;
+    });
     setAuthorInput("");
+  }
+
+  function getEffectiveAuthors(): string[] {
+    const list = [...authors];
+    const pending = authorInput.trim();
+    if (pending) {
+      const parts = pending.split(",").map((p) => p.trim()).filter(Boolean);
+      for (const part of parts) {
+        if (!list.includes(part)) {
+          list.push(part);
+        }
+      }
+    }
+    return list;
   }
 
   return (
@@ -43,15 +71,17 @@ export function GameForm({
       className="flex flex-col gap-5"
       onSubmit={(e) => {
         e.preventDefault();
+        const finalAuthors = getEffectiveAuthors();
         onSubmit({
           name: name.trim(),
           year: Number(year) || new Date().getFullYear(),
           schoolYear: schoolYear || (schoolYears[0] as string),
-          authors,
-          image,
+          authors: finalAuthors,
+          image: image || "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=768&q=80",
           playUrl: playUrl.trim(),
           ...(downloadUrl.trim() ? { downloadUrl: downloadUrl.trim() } : {}),
           description: description.trim(),
+          origin,
         });
       }}
     >
@@ -76,6 +106,21 @@ export function GameForm({
           value={year}
           onChange={(e) => setYear(e.target.value)}
         />
+      </label>
+
+      <label className="flex flex-col gap-2">
+        <span className="text-[13px] font-medium text-muted-foreground">Origem</span>
+        <select
+          className="field"
+          value={origin}
+          onChange={(e) => setOrigin(e.target.value as GameOrigin)}
+        >
+          <option value={GameOrigin.PROJETO_INTEGRADOR}>PROJETO INTEGRADOR</option>
+          <option value={GameOrigin.GAMEHUB}>GAMEHUB</option>
+          <option value={GameOrigin.GAMEJAM}>GAMEJAM</option>
+          <option value={GameOrigin.POC}>POC</option>
+          <option value={GameOrigin.OUTRO}>OUTRO</option>
+        </select>
       </label>
 
       <label className="flex flex-col gap-2">
@@ -133,20 +178,30 @@ export function GameForm({
 
       <div className="flex flex-col gap-2">
         <span className="text-[13px] font-medium text-muted-foreground">Autores</span>
-        <input
-          className="field"
-          placeholder="Digite um nome e pressione Enter"
-          value={authorInput}
-          onChange={(e) => setAuthorInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              addAuthor();
-            }
-          }}
-        />
+        <div className="flex gap-2">
+          <input
+            className="field flex-1"
+            placeholder="Digite o nome (ou nomes separados por vírgula)"
+            value={authorInput}
+            onChange={(e) => setAuthorInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addAuthor();
+              }
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => addAuthor()}
+            className="btn-base btn-outline px-4 text-sm"
+          >
+            <Plus className="size-4" />
+            Adicionar
+          </button>
+        </div>
         {authors.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-1">
             {authors.map((a) => (
               <span key={a} className="pill gap-1.5">
                 {a}

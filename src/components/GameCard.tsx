@@ -19,7 +19,7 @@ export function GameCard({ game }: { game: Game }) {
           <span className="pill">Ano: {game.year}</span>
         </div>
         <p className="text-[13px] font-medium text-muted-foreground">
-          {game.authors.join(", ")}
+          {Array.isArray(game.authors) ? game.authors.join(", ") : (game.authors || "")}
         </p>
         <Link
           to="/jogo/$gameId"

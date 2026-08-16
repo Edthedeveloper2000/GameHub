@@ -34,7 +34,7 @@ export function AdminGameList({
           <div className="min-w-[160px] flex-1">
             <h3 className="text-base leading-snug">{game.name}</h3>
             <p className="mt-1 text-[13px] font-medium text-muted-foreground">
-              {game.schoolYear} · {game.year} · {game.authors.join(", ") || "Sem autores"}
+              {game.schoolYear} · {game.year} · {Array.isArray(game.authors) ? (game.authors.join(", ") || "Sem autores") : (game.authors || "Sem autores")}
             </p>
           </div>
           <div className="flex gap-2">

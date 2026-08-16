@@ -19,15 +19,6 @@ export function Navbar({ admin = false }: { admin?: boolean }) {
 
         {admin ? (
           <div className="flex items-center gap-2">
-            <Link to="/admin" className="btn-base btn-ghost h-10 px-4 text-sm">
-              Painel
-            </Link>
-            <Link
-              to="/admin/cadastro"
-              className="btn-base btn-outline hidden h-10 px-4 text-sm sm:inline-flex"
-            >
-              Novo jogo
-            </Link>
             <button
               type="button"
               onClick={() => navigate({ to: "/" })}

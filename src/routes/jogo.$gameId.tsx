@@ -129,7 +129,7 @@ function GamePage() {
               <span className="pill">Ano: {game.year}</span>
             </div>
             <p className="text-[13px] font-medium text-muted-foreground">
-              {game.authors.join(", ")}
+              {Array.isArray(game.authors) ? game.authors.join(", ") : (game.authors || "")}
             </p>
             <p className="text-[15px] text-muted-foreground">{game.description}</p>
 

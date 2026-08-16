@@ -4,7 +4,6 @@ import { CheckCircle2, Plus } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AdminGameList } from "@/components/AdminGameList";
-import { GameForm } from "@/components/GameForm";
 import { useGames } from "@/components/GamesProvider";
 import type { Game } from "@/data/games";
 
@@ -29,9 +28,7 @@ export const Route = createFileRoute("/admin/")({
 
 function AdminPage() {
   const navigate = useNavigate();
-  const { games, addGame, updateGame, removeGame } = useGames();
-  const [editing, setEditing] = useState<Game | null>(null);
-  const [creating, setCreating] = useState(false);
+  const { games, removeGame } = useGames();
   const [confirming, setConfirming] = useState<Game | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -57,67 +54,22 @@ function AdminPage() {
             <Link to="/" className="btn-base btn-outline">
               Ver site
             </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setEditing(null);
-                setCreating(true);
-              }}
-              className="btn-base btn-primary"
-            >
+            <Link to="/admin/cadastro" className="btn-base btn-primary">
               <Plus className="size-4" />
               Adicionar jogo
-            </button>
+            </Link>
           </div>
         </header>
-
-        {(creating || editing) && (
-          <section className="card-surface mt-8 p-6 sm:p-8">
-            <h3 className="mb-5 text-lg">
-              {editing ? `Editar: ${editing.name}` : "Novo jogo"}
-            </h3>
-            <GameForm
-              {...(editing ? { initial: editing } : {})}
-              submitLabel={editing ? "Salvar alterações" : "Cadastrar jogo"}
-              onCancel={() => {
-                setCreating(false);
-                setEditing(null);
-              }}
-              onSubmit={(values) => {
-                if (editing) {
-                  updateGame(editing.id, values);
-                  notify("Jogo atualizado com sucesso");
-                } else {
-                  addGame(values);
-                  notify("Jogo cadastrado com sucesso");
-                }
-                setCreating(false);
-                setEditing(null);
-              }}
-            />
-          </section>
-        )}
 
         <section className="mt-8">
           <AdminGameList
             games={games}
             onEdit={(game) => {
-              setCreating(false);
-              setEditing(game);
+              navigate({ to: "/admin/editar/$gameId", params: { gameId: game.id } });
             }}
             onDelete={(game) => setConfirming(game)}
           />
         </section>
-
-        <div className="mt-8">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/admin/cadastro" })}
-            className="text-[13px] font-medium text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
-          >
-            Abrir formulário de cadastro em página cheia
-          </button>
-        </div>
       </main>
 
       {confirming && (
