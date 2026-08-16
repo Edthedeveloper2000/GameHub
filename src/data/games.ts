@@ -3,6 +3,7 @@ import game2 from "@/assets/game-2.jpg";
 import game3 from "@/assets/game-3.jpg";
 import game4 from "@/assets/game-4.jpg";
 import pingo from "@/assets/pingo.png";
+import bytecraft from "@/assets/bytecraft.png";
 
 export type Game = {
   id: string;
@@ -37,6 +38,19 @@ export const games: Game[] = [
     description: "Aventura educativa sobre redes e segurança direcionada a alunos do 2º ano.",
     origin: GameOrigin.PROJETO_INTEGRADOR,
   },
+  {
+    id: "bytecraft",
+    name: "ByteCraft",
+    year: 2025,
+    schoolYear: "5º ano",
+    authors: ["Aline", "Luana", "Arthur", "Marcos Eduardo"],
+    image: bytecraft,
+    playUrl: "http://tomcat.nupessc.caf.ufv.br/bytecraft/",
+    description:
+      "Aventura educativa sobre componentes de um computador direcionada a aluns do 5º ano.",
+    origin: GameOrigin.PROJETO_INTEGRADOR,
+  },
+
   {
     id: "lua-cadente",
     name: "Lua Cadente",
