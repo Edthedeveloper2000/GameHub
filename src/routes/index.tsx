@@ -27,7 +27,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [name, setName] = useState("");
   const [schoolYear, setSchoolYear] = useState("");
   const [year, setYear] = useState("");
   const [origin, setOrigin] = useState("");
@@ -50,11 +49,9 @@ function Index() {
       const matchesSchoolYear = origin === "PROJETO INTEGRADOR" ? (!schoolYear || g.schoolYear === schoolYear) : true;
       const matchesYear = !year || String(g.year) === year;
       const matchesAuthor = !author || g.authors.some((a) => a.toLowerCase().includes(author.trim().toLowerCase()));
-      const matchesName = origin === "PROJETO INTEGRADOR" ? (!name || g.name.toLowerCase().includes(name.trim().toLowerCase())) : true;
-
-      return matchesGlobal && matchesOrigin && matchesSchoolYear && matchesYear && matchesAuthor && matchesName;
+      return matchesGlobal && matchesOrigin && matchesSchoolYear && matchesYear && matchesAuthor;
     });
-  }, [search, origin, schoolYear, year, author, name]);
+  }, [search, origin, schoolYear, year, author]);
 
   return (
     <div className="min-h-screen">
@@ -96,7 +93,6 @@ function Index() {
               setOrigin(v);
               if (v !== "PROJETO INTEGRADOR") {
                 setSchoolYear("");
-                setName("");
               }
             }}
             aria-label="Origem do jogo"
@@ -109,14 +105,7 @@ function Index() {
             <option value="OUTRO">OUTRO</option>
           </select>
 
-          {origin === "PROJETO INTEGRADOR" && (
-            <input
-              className="field min-w-[200px] flex-1"
-              placeholder="Buscar por nome do jogo"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          )}
+          {/* name-specific filter removed — global search replaces it */}
 
           {origin === "PROJETO INTEGRADOR" && (
             <select
