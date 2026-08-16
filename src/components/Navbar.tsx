@@ -18,14 +18,25 @@ export function Navbar({ admin = false }: { admin?: boolean }) {
         </div>
 
         {admin ? (
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/" })}
-            className="btn-base btn-ghost h-10 px-4 text-sm"
-          >
-            <LogOut className="size-4" />
-            Sair
-          </button>
+          <div className="flex items-center gap-2">
+            <Link to="/admin" className="btn-base btn-ghost h-10 px-4 text-sm">
+              Painel
+            </Link>
+            <Link
+              to="/admin/cadastro"
+              className="btn-base btn-outline hidden h-10 px-4 text-sm sm:inline-flex"
+            >
+              Novo jogo
+            </Link>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/" })}
+              className="btn-base btn-ghost h-10 px-4 text-sm"
+            >
+              <LogOut className="size-4" />
+              Sair
+            </button>
+          </div>
         ) : (
           <Link
             to="/login"

@@ -45,7 +45,7 @@ function LoginPage() {
           className="mt-6 flex flex-col gap-5"
           onSubmit={(e) => {
             e.preventDefault();
-            navigate({ to: "/admin/cadastro" });
+            navigate({ to: "/admin" });
           }}
         >
           <label className="flex flex-col gap-2">

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminCadastroRouteImport } from './routes/admin.cadastro'
 import { Route as JogoGameIdRouteImport } from './routes/jogo.$gameId'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminCadastroRoute = AdminCadastroRouteImport.update({
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/cadastro': typeof AdminCadastroRoute
   '/jogo/$gameId': typeof JogoGameIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/admin/cadastro': typeof AdminCadastroRoute
   '/jogo/$gameId': typeof JogoGameIdRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/admin/cadastro': typeof AdminCadastroRoute
   '/jogo/$gameId': typeof JogoGameIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/admin/cadastro' | '/jogo/$gameId'
+  fullPaths: '/' | '/login' | '/admin/cadastro' | '/jogo/$gameId' | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/admin/cadastro' | '/jogo/$gameId'
-  id: '__root__' | '/' | '/login' | '/admin/cadastro' | '/jogo/$gameId'
+  to: '/' | '/login' | '/admin/cadastro' | '/jogo/$gameId' | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/admin/cadastro'
+    | '/jogo/$gameId'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +82,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   AdminCadastroRoute: typeof AdminCadastroRoute
   JogoGameIdRoute: typeof JogoGameIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -83,6 +99,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/cadastro': {
@@ -107,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   AdminCadastroRoute: AdminCadastroRoute,
   JogoGameIdRoute: JogoGameIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
