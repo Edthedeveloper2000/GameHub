@@ -1,19 +1,19 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Download, ExternalLink, Maximize, Play } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GameGrid } from "@/components/GameCard";
-import { games } from "@/data/games";
+import { games as seedGames } from "@/data/games";
+import { useGames } from "@/components/GamesProvider";
 
 export const Route = createFileRoute("/jogo/$gameId")({
   loader: ({ params }) => {
-    const game = games.find((g) => g.id === params.gameId);
-    if (!game) throw notFound();
-    return { game };
+    const game = seedGames.find((g) => g.id === params.gameId) ?? null;
+    return { game, gameId: params.gameId };
   },
   head: ({ loaderData }) => {
-    if (!loaderData) {
+    if (!loaderData?.game) {
       return {
         meta: [{ title: "Jogo não encontrado — GameHub UFV" }, { name: "robots", content: "noindex" }],
       };
@@ -33,14 +33,34 @@ export const Route = createFileRoute("/jogo/$gameId")({
 });
 
 function GamePage() {
-  const { game } = Route.useLoaderData();
+  const { game: seedGame, gameId } = Route.useLoaderData();
+  const { games, getGame } = useGames();
+  const game = getGame(gameId) ?? seedGame;
   const frameRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
-  const others = games.filter((g) => g.id !== game.id).slice(0, 4);
+  const others = games.filter((g) => g.id !== gameId).slice(0, 4);
 
   function startPlaying() {
     setPlaying(true);
     frameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  if (!game) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="container-page flex flex-col items-center gap-4 py-24 text-center">
+          <h2>Jogo não encontrado</h2>
+          <p className="text-muted-foreground">
+            Este jogo pode ter sido removido do catálogo.
+          </p>
+          <Link to="/" className="btn-base btn-primary">
+            Voltar para o catálogo
+          </Link>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -114,7 +134,10 @@ function GamePage() {
             <p className="text-[15px] text-muted-foreground">{game.description}</p>
 
             <div className="mt-auto flex flex-col gap-3">
-              
+              <button type="button" onClick={startPlaying} className="btn-base btn-primary w-full">
+                <Play className="size-4" />
+                Jogar
+              </button>
               {game.downloadUrl && (
                 <a
                   href={game.downloadUrl}
