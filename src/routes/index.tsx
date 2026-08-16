@@ -32,28 +32,29 @@ function Index() {
   const [year, setYear] = useState("");
   const [origin, setOrigin] = useState("");
   const [author, setAuthor] = useState("");
+  const [search, setSearch] = useState("");
 
-  const [filters, setFilters] = useState({
-    name: "",
-    schoolYear: "",
-    year: "",
-    author: "",
-    origin: "",
-  });
+  const results = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return games.filter((g) => {
+      const matchesGlobal =
+        !q ||
+        g.name.toLowerCase().includes(q) ||
+        g.description.toLowerCase().includes(q) ||
+        g.authors.some((a) => a.toLowerCase().includes(q)) ||
+        g.schoolYear.toLowerCase().includes(q) ||
+        String(g.year).includes(q) ||
+        String(g.origin).toLowerCase().includes(q);
 
-  const results = useMemo(
-    () =>
-      games.filter(
-        (g) =>
-          g.name.toLowerCase().includes(filters.name.trim().toLowerCase()) &&
-          (!filters.origin || g.origin === filters.origin) &&
-          (!filters.schoolYear || g.schoolYear === filters.schoolYear) &&
-          (!filters.year || String(g.year) === filters.year) &&
-          (!filters.author ||
-            g.authors.some((a) => a.toLowerCase().includes(filters.author.trim().toLowerCase()))),
-      ),
-    [filters],
-  );
+      const matchesOrigin = !origin || g.origin === origin;
+      const matchesSchoolYear = origin === "PROJETO INTEGRADOR" ? (!schoolYear || g.schoolYear === schoolYear) : true;
+      const matchesYear = !year || String(g.year) === year;
+      const matchesAuthor = !author || g.authors.some((a) => a.toLowerCase().includes(author.trim().toLowerCase()));
+      const matchesName = origin === "PROJETO INTEGRADOR" ? (!name || g.name.toLowerCase().includes(name.trim().toLowerCase())) : true;
+
+      return matchesGlobal && matchesOrigin && matchesSchoolYear && matchesYear && matchesAuthor && matchesName;
+    });
+  }, [search, origin, schoolYear, year, author, name]);
 
   return (
     <div className="min-h-screen">
@@ -75,13 +76,18 @@ function Index() {
           </p>
         </section>
 
-        <form
-          className="card-surface flex flex-wrap items-center gap-3 p-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setFilters({ name, schoolYear, year, author, origin });
-          }}
-        >
+        <div className="relative w-full mb-4">
+          <Search className="size-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            className="field w-full pr-10"
+            placeholder="Pesquisar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            aria-label="Pesquisa global"
+          />
+        </div>
+
+        <form className="card-surface flex flex-wrap items-center gap-3 p-4">
           <select
             className="field min-w-[160px] flex-1"
             value={origin}
@@ -146,10 +152,6 @@ function Index() {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
           />
-          <button type="submit" className="btn-base btn-primary">
-            <Search className="size-4" />
-            Filtrar
-          </button>
         </form>
 
         <section className="py-12">
