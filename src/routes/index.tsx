@@ -30,21 +30,27 @@ function Index() {
   const [name, setName] = useState("");
   const [schoolYear, setSchoolYear] = useState("");
   const [year, setYear] = useState("");
+  const [origin, setOrigin] = useState("");
   const [author, setAuthor] = useState("");
 
-  const [filters, setFilters] = useState({ name: "", schoolYear: "", year: "", author: "" });
+  const [filters, setFilters] = useState({
+    name: "",
+    schoolYear: "",
+    year: "",
+    author: "",
+    origin: "",
+  });
 
   const results = useMemo(
     () =>
       games.filter(
         (g) =>
           g.name.toLowerCase().includes(filters.name.trim().toLowerCase()) &&
+          (!filters.origin || g.origin === filters.origin) &&
           (!filters.schoolYear || g.schoolYear === filters.schoolYear) &&
           (!filters.year || String(g.year) === filters.year) &&
           (!filters.author ||
-            g.authors.some((a) =>
-              a.toLowerCase().includes(filters.author.trim().toLowerCase()),
-            )),
+            g.authors.some((a) => a.toLowerCase().includes(filters.author.trim().toLowerCase()))),
       ),
     [filters],
   );
@@ -61,13 +67,11 @@ function Index() {
             style={{ background: "var(--gradient-neon)" }}
           />
           <h1 className="relative max-w-2xl">
-            Descubra os jogos criados na{" "}
-            <span className="text-gradient-neon">UFV Florestal</span>
+            Descubra os jogos criados na <span className="text-gradient-neon">UFV Florestal</span>
           </h1>
           <p className="relative mt-4 max-w-2xl text-base text-muted-foreground">
-            Um catálogo aberto dos jogos desenvolvidos por estudantes e professores do
-            Campus Florestal. Filtre por turma, ano ou autoria e jogue direto pelo
-            navegador.
+            Um catálogo aberto dos jogos desenvolvidos por estudantes e professores do Campus
+            Florestal. Filtre por turma, ano ou autoria e jogue direto pelo navegador.
           </p>
         </section>
 
@@ -75,28 +79,54 @@ function Index() {
           className="card-surface flex flex-wrap items-center gap-3 p-4"
           onSubmit={(e) => {
             e.preventDefault();
-            setFilters({ name, schoolYear, year, author });
+            setFilters({ name, schoolYear, year, author, origin });
           }}
         >
-          <input
-            className="field min-w-[200px] flex-1"
-            placeholder="Buscar por nome do jogo"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
           <select
             className="field min-w-[160px] flex-1"
-            value={schoolYear}
-            onChange={(e) => setSchoolYear(e.target.value)}
-            aria-label="Ano escolar alvo"
+            value={origin}
+            onChange={(e) => {
+              const v = e.target.value;
+              setOrigin(v);
+              if (v !== "PROJETO INTEGRADOR") {
+                setSchoolYear("");
+                setName("");
+              }
+            }}
+            aria-label="Origem do jogo"
           >
-            <option value="">Ano escolar alvo</option>
-            {schoolYears.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
+            <option value="">Origem</option>
+            <option value="PROJETO INTEGRADOR">PROJETO INTEGRADOR</option>
+            <option value="GAMEHUB">GAMEHUB</option>
+            <option value="GAMEJAM">GAMEJAM</option>
+            <option value="POC">POC</option>
+            <option value="OUTRO">OUTRO</option>
           </select>
+
+          {origin === "PROJETO INTEGRADOR" && (
+            <input
+              className="field min-w-[200px] flex-1"
+              placeholder="Buscar por nome do jogo"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          )}
+
+          {origin === "PROJETO INTEGRADOR" && (
+            <select
+              className="field min-w-[160px] flex-1"
+              value={schoolYear}
+              onChange={(e) => setSchoolYear(e.target.value)}
+              aria-label="Ano escolar alvo"
+            >
+              <option value="">Ano escolar alvo</option>
+              {schoolYears.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          )}
           <select
             className="field min-w-[140px] flex-1"
             value={year}
@@ -130,9 +160,7 @@ function Index() {
               <div className="flex size-16 items-center justify-center rounded-2xl border border-border bg-background">
                 <Gamepad2 className="size-8 text-muted-foreground" />
               </div>
-              <p className="text-muted-foreground">
-                Nenhum jogo encontrado com esses filtros.
-              </p>
+              <p className="text-muted-foreground">Nenhum jogo encontrado com esses filtros.</p>
             </div>
           )}
         </section>

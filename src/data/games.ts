@@ -2,6 +2,7 @@ import game1 from "@/assets/game-1.jpg";
 import game2 from "@/assets/game-2.jpg";
 import game3 from "@/assets/game-3.jpg";
 import game4 from "@/assets/game-4.jpg";
+import pingo from "@/assets/pingo.png";
 
 export type Game = {
   id: string;
@@ -13,9 +14,30 @@ export type Game = {
   playUrl: string;
   downloadUrl?: string;
   description: string;
+  origin: GameOrigin;
 };
 
+export enum GameOrigin {
+  PROJETO_INTEGRADOR = "PROJETO INTEGRADOR",
+  GAMEHUB = "GAMEHUB",
+  GAMEJAM = "GAMEJAM",
+  POC = "POC",
+  OUTRO = "OUTRO",
+}
+
 export const games: Game[] = [
+  {
+    id: "pingo-aventura",
+    name: "Pingo: uma Aventura na rede",
+    year: 2025,
+    schoolYear: "2º ano",
+    authors: ["Edmarcos", "Vinícius", "Ana Luiza", "César Grandis", "Rafaella Pinheiro"],
+    image: pingo,
+    playUrl: "http://tomcat.nupessc.caf.ufv.br/pingo/",
+    downloadUrl: undefined,
+    description: "Aventura educativa sobre redes e segurança direcionada a alunos do 2º ano.",
+    origin: GameOrigin.PROJETO_INTEGRADOR,
+  },
   {
     id: "lua-cadente",
     name: "Lua Cadente",
@@ -27,6 +49,7 @@ export const games: Game[] = [
     downloadUrl: "https://example.com/lua-cadente.zip",
     description:
       "Plataforma 2D noturno onde o jogador reconstrói constelações resolvendo desafios de física.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "circuito-matematico",
@@ -38,6 +61,7 @@ export const games: Game[] = [
     playUrl: "https://example.com/circuito-matematico",
     description:
       "Puzzle de operações e frações em que cada acerto energiza um novo trecho do circuito.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "nebulosa-alfa",
@@ -48,8 +72,8 @@ export const games: Game[] = [
     image: game3,
     playUrl: "https://example.com/nebulosa-alfa",
     downloadUrl: "https://example.com/nebulosa-alfa.zip",
-    description:
-      "Shooter espacial arcade com perguntas de astronomia entre as ondas de inimigos.",
+    description: "Shooter espacial arcade com perguntas de astronomia entre as ondas de inimigos.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "adventure-quizz",
@@ -59,8 +83,8 @@ export const games: Game[] = [
     authors: ["Helena Prado", "Thiago Martins"],
     image: game4,
     playUrl: "https://example.com/adventure-quizz",
-    description:
-      "Aventura de perguntas sobre biologia e meio ambiente com trilhas ramificadas.",
+    description: "Aventura de perguntas sobre biologia e meio ambiente com trilhas ramificadas.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "bit-fazenda",
@@ -73,6 +97,7 @@ export const games: Game[] = [
     downloadUrl: "https://example.com/bit-fazenda.zip",
     description:
       "Simulador leve de fazenda que ensina noções de contagem, medidas e sustentabilidade.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "logica-neon",
@@ -82,8 +107,8 @@ export const games: Game[] = [
     authors: ["Pedro Henrique Dias", "Sofia Ramos"],
     image: game1,
     playUrl: "https://example.com/logica-neon",
-    description:
-      "Desafios de lógica proposicional em um labirinto de portas logicas iluminadas.",
+    description: "Desafios de lógica proposicional em um labirinto de portas logicas iluminadas.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "eco-runner",
@@ -95,6 +120,7 @@ export const games: Game[] = [
     playUrl: "https://example.com/eco-runner",
     description:
       "Endless runner em que coletar resíduos corretos aumenta o multiplicador de pontos.",
+    origin: GameOrigin.GAMEHUB,
   },
   {
     id: "orbita-quimica",
@@ -107,19 +133,10 @@ export const games: Game[] = [
     downloadUrl: "https://example.com/orbita-quimica.zip",
     description:
       "Monte moléculas contra o tempo enquanto orbita entre estações do laboratório espacial.",
+    origin: GameOrigin.GAMEHUB,
   },
 ];
 
-export const schoolYears = [
-  "4º ano",
-  "5º ano",
-  "6º ano",
-  "7º ano",
-  "8º ano",
-  "9º ano",
-  "1º ano EM",
-  "2º ano EM",
-  "3º ano EM",
-];
+export const schoolYears = ["1º ano", "2º ano", "3º ano", "4º ano", "5º ano"];
 
 export const gameYears = [2022, 2023, 2024, 2025, 2026];
