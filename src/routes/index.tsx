@@ -46,18 +46,20 @@ function Index() {
         String(g.origin).toLowerCase().includes(q);
 
       const matchesOrigin = !origin || g.origin === origin;
-      const matchesSchoolYear = origin === "PROJETO INTEGRADOR" ? (!schoolYear || g.schoolYear === schoolYear) : true;
+      const matchesSchoolYear =
+        origin === "PROJETO INTEGRADOR" ? !schoolYear || g.schoolYear === schoolYear : true;
       const matchesYear = !year || String(g.year) === year;
-      const matchesAuthor = !author || g.authors.some((a) => a.toLowerCase().includes(author.trim().toLowerCase()));
+      const matchesAuthor =
+        !author || g.authors.some((a) => a.toLowerCase().includes(author.trim().toLowerCase()));
       return matchesGlobal && matchesOrigin && matchesSchoolYear && matchesYear && matchesAuthor;
     });
   }, [search, origin, schoolYear, year, author]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
 
-      <main className="container-page">
+      <main className="container-page flex-1">
         <section className="relative py-10">
           <div
             aria-hidden
