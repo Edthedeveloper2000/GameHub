@@ -34,7 +34,6 @@ export const games: Game[] = [
     authors: ["Edmarcos", "Vinícius", "Ana Luiza", "César Grandis", "Rafaella Pinheiro"],
     image: pingo,
     playUrl: "http://tomcat.nupessc.caf.ufv.br/pingo/",
-    downloadUrl: undefined,
     description: "Aventura educativa sobre redes e segurança direcionada a alunos do 2º ano.",
     origin: GameOrigin.PROJETO_INTEGRADOR,
   },
